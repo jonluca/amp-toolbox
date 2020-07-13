@@ -34,7 +34,7 @@ class OptimizeCmd {
       lts,
       geoApiUrl: geoapi,
       ampPackagerMode,
-      ampPackagerBaseUrl
+      ampPackagerBaseUrl,
     });
     logger.info(optimized);
   }
