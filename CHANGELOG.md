@@ -1,8 +1,18 @@
+## v2.5.10 (2020-07-12)
+
+#### :rocket: Enhancement
+
+* `optimizer`
+* [#856](https://github.com/ampproject/amp-toolbox/issues/862) Add AMP Packager compatibility ([@jonluca](https://github.com/jonluca))
+
+#### Committers: 1
+- JonLuca DeCaro ([@jonluca](https://github.com/jonluca))
+
 ## v2.5.9 (2020-07-08)
 
 #### :bug: Bug Fix
 * `optimizer`
-  * [#856](https://github.com/ampproject/amp-toolbox/pull/856) Parallelize image optimization ([@sebastianbenz](https://github.com/sebastianbenz))
+* [#856](https://github.com/ampproject/amp-toolbox/pull/856) Parallelize image optimization ([@sebastianbenz](https://github.com/sebastianbenz))
 
 #### Committers: 1
 - Sebastian Benz ([@sebastianbenz](https://github.com/sebastianbenz))
