@@ -1,4 +1,10 @@
-import { assertPass, runLocalTest, assertWarn, assertFail } from "./lib";
+import {
+  assertPass,
+  runLocalTest,
+  assertWarn,
+  assertFail,
+  assertInfo,
+} from "./lib";
 import { AmpImgAmpPixelPreferred } from "../src/rules/AmpImgAmpPixelPreferred";
 import { MetaCharsetIsFirst } from "../src/rules/MetaCharsetIsFirst";
 import { RuntimeIsPreloaded } from "../src/rules/RuntimeIsPreloaded";
@@ -12,7 +18,12 @@ import { BookendExists } from "../src/rules/BookendExists";
 import { TitleMeetsLengthCriteria } from "../src/rules/TitleMeetsLengthCriteria";
 import { IsTransformedAmp } from "../src/rules/IsTransformedAmp";
 import { ModuleRuntimeUsed } from "../src/rules/ModuleRuntimeUsed";
-import { BlockingExtensionsPreloaded } from '../src/rules/BlockingExtensionsPreloaded';
+import { BlockingExtensionsPreloaded } from "../src/rules/BlockingExtensionsPreloaded";
+import { FontsArePreloaded } from "../src/rules/FontsArePreloaded";
+import { HeroImageIsDefined } from "../src/rules/HeroImageIsDefined";
+import { FastGoogleFontsDisplay } from "../src/rules/FastGoogleFontsDisplay";
+import { GoogleFontPreconnect } from "../src/rules/GoogleFontPreconnect";
+import { BoilerplateIsRemoved } from "../src/rules/BoilerplateIsRemoved";
 
 describe(AmpImgAmpPixelPreferred.name, () => {
   it(`${AmpImgAmpPixelPreferred.name} - <amp-img height="1" width="1">`, async () => {
@@ -61,6 +72,52 @@ describe(AmpImgAmpPixelPreferred.name, () => {
   });
 });
 
+describe(BoilerplateIsRemoved.name, () => {
+  it(`${BoilerplateIsRemoved.name} - boilerplate removed`, async () => {
+    return assertPass(
+      runLocalTest(
+        BoilerplateIsRemoved,
+        `${__dirname}/local/BoilerplateIsRemoved-1/source.html`
+      )
+    );
+  });
+
+  it(`${BoilerplateIsRemoved.name} - amp-story boilerplate cannot be removed`, async () => {
+    return assertPass(
+      runLocalTest(
+        BoilerplateIsRemoved,
+        `${__dirname}/local/BoilerplateIsRemoved-2/source.html`
+      )
+    );
+  });
+
+  it(`${BoilerplateIsRemoved.name} - amp-experiment boilerplate avoidable`, async () => {
+    return assertInfo(
+      runLocalTest(
+        BoilerplateIsRemoved,
+        `${__dirname}/local/BoilerplateIsRemoved-3/source.html`
+      )
+    );
+  });
+
+  it(`${BoilerplateIsRemoved.name} - boilerplate was not removed`, async () => {
+    return assertWarn(
+      runLocalTest(
+        BoilerplateIsRemoved,
+        `${__dirname}/local/BoilerplateIsRemoved-4/source.html`
+      )
+    );
+  });
+
+  it(`${BoilerplateIsRemoved.name} - not transformed amp`, async () => {
+    return assertPass(
+      runLocalTest(
+        BoilerplateIsRemoved,
+        `${__dirname}/local/BoilerplateIsRemoved-5/source.html`
+      )
+    );
+  });
+});
 
 describe(BlockingExtensionsPreloaded.name, () => {
   it(`${BlockingExtensionsPreloaded.name} - preload for js and mjs present`, async () => {
@@ -90,6 +147,109 @@ describe(BlockingExtensionsPreloaded.name, () => {
     await assertWarn(results[0]);
     await assertWarn(results[1]);
     await assertWarn(results[2]);
+  });
+});
+
+describe(FastGoogleFontsDisplay.name, () => {
+  it(`${FastGoogleFontsDisplay.name} - all fonts have display param`, async () => {
+    return assertPass(
+      runLocalTest(
+        FastGoogleFontsDisplay,
+        `${__dirname}/local/FastGoogleFontsDisplay-1/source.html`
+      )
+    );
+  });
+  it(`${FastGoogleFontsDisplay.name} - no or wrong display param`, async () => {
+    const results = await runLocalTest(
+      FastGoogleFontsDisplay,
+      `${__dirname}/local/FastGoogleFontsDisplay-2/source.html`
+    );
+    expect(results).toHaveLength(4);
+    await assertWarn(results[0]);
+    await assertWarn(results[1]);
+    await assertWarn(results[2]);
+    await assertWarn(results[3]);
+  });
+});
+
+describe(FontsArePreloaded.name, () => {
+  it(`${FontsArePreloaded.name} - preload for font exists`, async () => {
+    return assertPass(
+      runLocalTest(
+        FontsArePreloaded,
+        `${__dirname}/local/FontsArePreloaded-1/source.html`
+      )
+    );
+  });
+  it(`${FontsArePreloaded.name} - preload for font missing`, async () => {
+    return assertInfo(
+      runLocalTest(
+        FontsArePreloaded,
+        `${__dirname}/local/FontsArePreloaded-2/source.html`
+      )
+    );
+  });
+  it(`${FontsArePreloaded.name} - all fonts have font-display set`, async () => {
+    return assertPass(
+      runLocalTest(
+        FontsArePreloaded,
+        `${__dirname}/local/FontsArePreloaded-3/source.html`
+      )
+    );
+  });
+});
+
+describe(GoogleFontPreconnect.name, () => {
+  it(`${GoogleFontPreconnect.name} - dns-prefetch preconnect exists`, async () => {
+    return assertPass(
+      runLocalTest(
+        GoogleFontPreconnect,
+        `${__dirname}/local/GoogleFontPreconnect-1/source.html`
+      )
+    );
+  });
+  it(`${GoogleFontPreconnect.name} - preconnect missing`, async () => {
+    return assertWarn(
+      runLocalTest(
+        GoogleFontPreconnect,
+        `${__dirname}/local/GoogleFontPreconnect-2/source.html`
+      )
+    );
+  });
+  it(`${GoogleFontPreconnect.name} - dns-prefetch missing`, async () => {
+    return assertWarn(
+      runLocalTest(
+        GoogleFontPreconnect,
+        `${__dirname}/local/GoogleFontPreconnect-3/source.html`
+      )
+    );
+  });
+});
+
+describe(HeroImageIsDefined.name, () => {
+  it(`${HeroImageIsDefined.name} - data-hero exists`, async () => {
+    return assertPass(
+      runLocalTest(
+        HeroImageIsDefined,
+        `${__dirname}/local/HeroImageIsDefined-1/source.html`
+      )
+    );
+  });
+  it(`${HeroImageIsDefined.name} - no relevant hero images`, async () => {
+    return assertPass(
+      runLocalTest(
+        HeroImageIsDefined,
+        `${__dirname}/local/HeroImageIsDefined-2/source.html`
+      )
+    );
+  });
+  it(`${HeroImageIsDefined.name} - data-hero missing`, async () => {
+    return assertWarn(
+      runLocalTest(
+        HeroImageIsDefined,
+        `${__dirname}/local/HeroImageIsDefined-3/source.html`
+      )
+    );
   });
 });
 

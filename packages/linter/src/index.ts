@@ -25,6 +25,11 @@ import { TitleMeetsLengthCriteria } from "./rules/TitleMeetsLengthCriteria";
 import { IsTransformedAmp } from "./rules/IsTransformedAmp";
 import { ModuleRuntimeUsed } from "./rules/ModuleRuntimeUsed";
 import { BlockingExtensionsPreloaded } from "./rules/BlockingExtensionsPreloaded";
+import { FontsArePreloaded } from "./rules/FontsArePreloaded";
+import { HeroImageIsDefined } from "./rules/HeroImageIsDefined";
+import { FastGoogleFontsDisplay } from "./rules/FastGoogleFontsDisplay";
+import { GoogleFontPreconnect } from "./rules/GoogleFontPreconnect";
+import { BoilerplateIsRemoved } from "./rules/BoilerplateIsRemoved";
 import { RuleConstructor } from "./rule";
 import { isArray } from "util";
 
@@ -130,8 +135,13 @@ function testsForMode(type: LintMode) {
       IsValid,
       RuntimeIsPreloaded,
       BlockingExtensionsPreloaded,
+      FontsArePreloaded,
+      FastGoogleFontsDisplay,
+      GoogleFontPreconnect,
       IsTransformedAmp,
+      BoilerplateIsRemoved,
       ModuleRuntimeUsed,
+      HeroImageIsDefined,
     ])
   );
   return tests.get(type) || [];
